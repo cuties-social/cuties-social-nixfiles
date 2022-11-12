@@ -19,6 +19,8 @@ in
     ]; */
 
   system.stateVersion = "22.11";
+  time.timeZone = "Europe/Berlin";
+  console.keyMap = "de";
 
   sops = {
     defaultSopsFile = secrets/all.yaml;

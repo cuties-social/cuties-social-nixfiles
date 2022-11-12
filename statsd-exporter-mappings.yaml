@@ -1,0 +1,99 @@
+# Comming from https://codeberg.org/stvo/mastodon-ansible-nodocker/src/commit/ba23ec8708b18adc0ccd85919ffd4fe59c9bea9a/group_vars/mastodon/exporter.yml#L15-L111
+
+mappings:
+  - match: Mastodon\.production\.web\.Auth\.(\w+)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_auth_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_auth"
+  - match: Mastodon\.production\.web\.WellKnown\.(\w+)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_wellknown_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_wellknown"
+  - match: Mastodon\.production\.web\.Api\.(\w*\d*)\.(\w+)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_api_$1_$2_$3"
+    labels:
+      version: "$1"
+      controller: "$2"
+      operation: "$3"
+      job: "Mastodon_web_api"
+  - match: Mastodon\.production\.web\.ActivityPub\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_activitypub_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_activitypub"
+  - match: Mastodon\.production\.web\.Admin\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_admin_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_admin"
+  - match: Mastodon\.production\.web\.Oauth\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_oauth_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_oauth"
+  - match: Mastodon\.production\.web\.PgHero\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_pghero_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_pghero"
+  - match: Mastodon\.production\.web\.Settings\.TwoFactorAuthentication\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_settings_twofactorauthentication_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_settings_twofactorauthentication"
+  - match: Mastodon\.production\.web\.Settings\.Preferences\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_settings_preferences_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_settings_preferences"
+  - match: Mastodon\.production\.web\.Settings\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_settings_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web_settings"
+  - match: Mastodon\.production\.web\.(\w*[Cc]ontroller\w*)\.(.+)
+    match_type: regex
+    name: "Mastodon_web_$1_$2"
+    labels:
+      controller: "$1"
+      operation: "$2"
+      job: "Mastodon_web"
+  - match: Mastodon\.production\.cache\.(.+)
+    match_type: regex
+    name: "Mastodon_cache_$1"
+    labels:
+      operation: "$1"
+      job: "Mastodon_cache"
+  - match: Mastodon\.production\.db\.(.+)
+    match_type: regex
+    name: "Mastodon_db_$1"
+    labels:
+      operation: "$1"
+      job: "Mastodon_db"
+  - match: Mastodon\.production\.sidekiq\.(.+)
+    match_type: regex
+    name: "Mastodon_sidekiq_$1"
+    labels:
+      operation: "$1"
+      job: "Mastodon_sidekiq"

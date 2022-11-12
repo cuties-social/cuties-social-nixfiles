@@ -33,6 +33,7 @@ in
         "mastodon/secret_key" = mastodon;
         "mastodon/vapid/private_key" = mastodon;
         "mastodon/vapid/public_key" = mastodon;
+        "root_password".neededForUsers = true;
       };
   };
 
@@ -47,6 +48,9 @@ in
 
   documentation.nixos.enable = false;
   users.users = {
+    root = {
+      passwordFile = config.sops.secrets."root_password".path;
+    };
     f2k1de = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];

@@ -1,8 +1,5 @@
 { pkgs, lib, config, nixpkgs, ... }:
 
-# TODO: Firewall
-# TODO: Emojis
-
 let
   enableMetrics = false;
   statsd-exporter = {
@@ -128,22 +125,22 @@ in
         MAX_DISPLAY_NAME_CHARS = "100";
         MAX_BIO_CHARS = "1000";
         MAX_PROFILE_FIELDS = "10";
+        STATSD_ADDR = statsd-exporter.listenUDP;
       };
     };
 
   systemd.services.mastodon-import-emojis = {
     after = [ "mastodon-web.service" ];
     script = ''
-      categories=$(ls ${pkgs.customEmojis})
-
-      for category in $categories; do
-        category_name="''${category##*/}"
+      for category in ${pkgs.customEmojis}/*; do
+        filename=''${category##*/}
+        category_name="''${filename%%.*}"
         category_name_arg="--category \"''${category_name}\""
-        if [[ "$category_name" == "undefined" ]]; then
+        if [ "$category_name" = "uncategorized" ]; then
           category_name_arg=""
         fi
 
-        echo "Importing ''${category_name} from ''${category} with ''${category_name_arg}";
+        echo "Importing ''${filename} from ''${category} with \"''${category_name_arg}\"";
 
         ${mastoConfig.package}/bin/tootctl emoji import ''${category} --overwrite ''${category_name_arg}
       done

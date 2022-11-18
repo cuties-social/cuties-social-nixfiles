@@ -130,6 +130,7 @@ in
     };
 
   systemd.services.mastodon-import-emojis = {
+    description = "Import custom emojis into mastodon";
     after = [ "mastodon-web.service" ];
     script = ''
       for category in ${pkgs.customEmojis}/*; do
@@ -145,7 +146,9 @@ in
         ${mastoConfig.package}/bin/tootctl emoji import ''${category} --overwrite ''${category_name_arg}
       done
     '';
-    environment = config.systemd.services.mastodon-init-dirs.environment;
+    # mkforce is needed since environment.PATH is already defined for all systemd services.
+    # However by simply using mastodon-webs entire environment, we already have imagemagic and other potential runtime dependencies already installed
+    environment = lib.mkForce config.systemd.services.mastodon-web.environment;
     serviceConfig = {
       Type = "oneshot";
 

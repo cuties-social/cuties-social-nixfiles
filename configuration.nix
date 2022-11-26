@@ -8,6 +8,7 @@ in
   imports = [
     # ./hardware-config.nix
     ./prometheus.nix
+    ./modules/restic-backups.nix
   ];
 
   system.stateVersion = "22.11";

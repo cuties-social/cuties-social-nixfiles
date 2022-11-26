@@ -13,6 +13,7 @@ in
 {
   /* imports = [
     ./hardware-config.nix
+    ./prometheus-node-exporter.nix
     ]; */
 
   system.stateVersion = "22.11";

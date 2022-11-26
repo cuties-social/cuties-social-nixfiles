@@ -13,6 +13,7 @@ in
 {
   /* imports = [
     ./hardware-config.nix
+    ./modules/restic-backups.nix
     ]; */
 
   system.stateVersion = "22.11";
@@ -223,6 +224,13 @@ in
   services.prometheus.exporters.node = {
     enable = true;
     listenAddress = "127.0.0.1";
+  };
+
+  restic-backups.mastodon-database = {
+    user = mastoConfig.user;
+    passwordFile = config.sops.secrets."restic-repo-password".path;
+    postgresDatabases = [ mastoConfig.database.name ];
+    timerConfig.OnCalendar = "*-*-* 05:05:00";
   };
 
   services.nginx.virtualHosts."${config.services.mastodon.localDomain}".locations =

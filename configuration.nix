@@ -224,11 +224,6 @@ in
     };
   };
 
-  services.prometheus.exporters.node = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-  };
-
   services.nginx.virtualHosts."${config.services.mastodon.localDomain}".locations =
     let
       metricsAllowedIPs = [ "10.0.0.0/8" ]; # Placeholder so we can change it in the future

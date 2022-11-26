@@ -3,8 +3,10 @@
 {
 
   services = {
-    prometheus.exporters.node.enable = true;
-    prometheus.exporters.node.listenAddress = "127.0.0.1";
+    prometheus.exporters.node = {
+      enable = true;
+      listenAddress = "127.0.0.1";
+    };
 
     nginx = {
       enable = true;

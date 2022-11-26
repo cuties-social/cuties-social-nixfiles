@@ -5,6 +5,31 @@ with lib;
 let
   backups = config.restic-backups;
 
+  targetOpts = { ... }: {
+    options = {
+      user = mkOption {
+        type = with types; nullOr str;
+      };
+      passwordFile = mkOption {
+        type = with types; nullOr path;
+      };
+      hostname = mkOption {
+        type = types.str;
+      };
+      protocol = mkOption {
+        type = types.str;
+        default = "rest:https";
+      };
+      repoPath = mkOption {
+        type = with types; nullOr str;
+        default = null;
+        # Using default text soely for documentation purpose. Since this has no knoweledge of the backupOpts it is placed in
+        # this default needs to be set when we construct the script. Thats also why default=null is here.
+        defaultText = "''${config.networking.hostname}-${backup-name}";
+      };
+    };
+  };
+
   backupOpts = { ... }: {
     options = {
 
@@ -28,8 +53,7 @@ let
       };
 
       targets = mkOption {
-        type    = with types; listOf str;
-        default = [ "jules.f2k1.de" ];
+        type    = with types; listOf (submodule targetOpts);
       };
 
       timerConfig = mkOption {
@@ -42,6 +66,10 @@ let
 
     };
   };
+
+  getPasswordFiles = backupCfg: (filter (el: el != null) (
+    map (targetCfg: targetCfg.passwordFile) backupCfg.targets
+  )) ++ [ backupCfg.passwordFile ];
 
 in {
 
@@ -75,45 +103,32 @@ in {
           PrivateTmp         = true;
           ProtectHome        = true;
           ProtectSystem      = "strict";
-          Environment        = "RESTIC_PASSWORD_FILE=/tmp/passwordFile";
-          ExecStartPre = [
-            (
-              "!" + (pkgs.writeScript "privileged-pre-start" (''
-                #!${pkgs.runtimeShell}
-                set -eu pipefail
+          Environment        = "RESTIC_PASSWORD_FILE=${backup.passwordFile}";
+          BindReadOnlyPaths  = getPasswordFiles backup ++ backup.paths;
+          ExecStartPre       = optional (backup.postgresDatabases != []) (pkgs.writeScript "pre-start" (''
+              #!${pkgs.runtimeShell}
+              set -eu pipefail
 
-                cp ${backup.passwordFile} /tmp/passwordFile;
-                chown ${backup.user} /tmp/passwordFile;
-                ${if builtins.elem "jules.f2k1.de" backup.targets then ''
-                  cp /run/secrets/restic-server-jules    /tmp/jules.f2k1.de;
-                  chown ${backup.user} /tmp/jules.f2k1.de;
-                '' else "" }
-
-              ''))
-            )
-            (
-              pkgs.writeScript "pre-start" (''
-                #!${pkgs.runtimeShell}
-                set -eu pipefail
-
-                '' + concatMapStringsSep "\n" (db: ''
-                echo "Dumping Postgres-database: ${db}"
-                mkdir -p /tmp/postgresDatabases
-                pg_dump ${db} | zstd --rsyncable > /tmp/postgresDatabases/${db}.sql.zst
-                [ $(du -b /tmp/postgresDatabases/${db}.sql.zst | cut -f1) -gt "50" ] || exit 1
-              '') backup.postgresDatabases)
-            )
-          ];
+              '' + concatMapStringsSep "\n" (db: ''
+              echo "Dumping Postgres-database: ${db}"
+              mkdir -p /tmp/postgresDatabases
+              pg_dump ${db} | zstd --rsyncable > /tmp/postgresDatabases/${db}.sql.zst
+              [ $(du -b /tmp/postgresDatabases/${db}.sql.zst | cut -f1) -gt "50" ] || exit 1
+            '') backup.postgresDatabases
+          ));
         };
 
         script = ''
           set -eu pipefail
           export XDG_CACHE_HOME=/var/cache/restic-backup-${name}
 
-        '' + concatMapStringsSep "\n\n" (server: ''
-          echo "Backing up to: ${server}"
+        '' + concatMapStringsSep "\n\n" (server: let
+          passwordCmd = lib.optionalString (server.passwordFile != null) "$(cat ${escapeShellArg server.passwordFile})";
+          repoPath = if (server.repoPath == null) then "${config.networking.hostName}-${name}" else server.repoPath;
+        in ''
+          echo "Backing up to: ${server.protocol}://${server.hostname}"
 
-          export RESTIC_REPOSITORY="rest:https://cutiessocial:$(cat /tmp/${server})@restic.${server}/${config.networking.hostName}-${name}"
+          export RESTIC_REPOSITORY="${server.protocol}://${server.user}:${passwordCmd}@${server.hostname}/${repoPath}"
 
           #create repo if it not exists
           restic snapshots || restic init

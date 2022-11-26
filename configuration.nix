@@ -28,6 +28,8 @@ in
         "mastodon/vapid/private_key" = mastodon;
         "mastodon/vapid/public_key" = mastodon;
         "kuschelhaufen-at-cuties-social" = {};
+        "restic-repo-password" = mastodon;
+        "restic-server-jules" = mastodon;
         "root_password".neededForUsers = true;
       };
   };

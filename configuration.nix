@@ -11,10 +11,10 @@ let
   mastoConfig = config.services.mastodon;
 in
 {
-  /* imports = [
-    ./hardware-config.nix
+  imports = [
+    #./hardware-config.nix
     ./modules/restic-backups.nix
-    ]; */
+  ];
 
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
@@ -33,6 +33,8 @@ in
         "mastodon/secret_key" = mastodon;
         "mastodon/vapid/private_key" = mastodon;
         "mastodon/vapid/public_key" = mastodon;
+        "restic-repo-password" = mastodon;
+        "restic-server-jules" = mastodon;
         "root_password".neededForUsers = true;
       };
   };
@@ -230,6 +232,15 @@ in
     user = mastoConfig.user;
     passwordFile = config.sops.secrets."restic-repo-password".path;
     postgresDatabases = [ mastoConfig.database.name ];
+    paths = [
+      "/var/lib/mastodon/public-system/media_attachments" # Hardcoded in the NixOS module
+      config.services.redis.servers.mastodon.settings.dir # Mastodon advised: https://docs.joinmastodon.org/admin/backups/#redis
+    ];
+    targets = [{
+      user = "cutiessocial";
+      passwordFile = config.sops.secrets."restic-server-jules".path;
+      hostname = "restic.jules.f2k1.de";
+    }];
     timerConfig.OnCalendar = "*-*-* 05:05:00";
   };
 

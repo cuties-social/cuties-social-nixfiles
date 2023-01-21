@@ -2,18 +2,13 @@
 
 let
   enableMetrics = false;
-  statsd-exporter = {
-    listenWeb = "127.0.0.1:9102";
-    listenTCP = "127.0.0.1:9125";
-    listenUDP = "127.0.0.1:9125";
-    configFile = ./statsd-exporter-mappings.yaml;
-  };
   mastoConfig = config.services.mastodon;
 in
 {
-  /* imports = [
-    ./hardware-config.nix
-    ]; */
+  imports = [
+    # ./hardware-config.nix
+    ./prometheus.nix
+  ];
 
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
@@ -125,7 +120,6 @@ in
         MAX_DISPLAY_NAME_CHARS = "100";
         MAX_BIO_CHARS = "1000";
         MAX_PROFILE_FIELDS = "10";
-        STATSD_ADDR = statsd-exporter.listenUDP;
       };
     };
 
@@ -205,45 +199,4 @@ in
     package = pkgs.elasticsearch7;
     enable = true;
   };
-
-  systemd.services."prometheus-statsd-exporter" = {
-    wantedBy = [
-      "multi-user.target"
-      "mastodon-web.service"
-    ];
-    serviceConfig = {
-      DynamicUser = true;
-      RuntimeDirectory = "prometheus-statsd-exporter";
-      ExecStart = ''${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter
-        --web.listen-address="${statsd-exporter.listenWeb}"
-        --statsd.listen-tcp="${statsd-exporter.listenTCP}"
-        --statsd.listen-udp="${statsd-exporter.listenUDP}"
-        --statsd.mapping-config=${statsd-exporter.configFile}
-      '';
-    };
-  };
-
-  services.prometheus.exporters.node = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-  };
-
-  services.nginx.virtualHosts."${config.services.mastodon.localDomain}".locations =
-    let
-      metricsAllowedIPs = [ "10.0.0.0/8" ]; # Placeholder so we can change it in the future
-      authConfig = ''
-        allow ${lib.concatStringsSep  "; \n" metricsAllowedIPs}
-        deny all;
-      '';
-    in
-    {
-      "/metrics/node" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.prometheus.exporters.node.port}/metrics";
-        extraConfig = authConfig;
-      };
-      "/metrics/statsd" = {
-        proxyPass = "http://${statsd-exporter.listenWeb}/metrics";
-        extraConfig = authConfig;
-      };
-    };
 }

@@ -11,9 +11,24 @@ in
     ./modules/restic-backups.nix
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
   console.keyMap = "de";
+  environment.systemPackages = with pkgs; [
+    htop
+    nano
+    vim
+    tmux
+    rsync
+    curl
+    wget
+    bat
+    fd
+    ripgrep
+    neofetch
+  ];
 
   sops = {
     defaultSopsFile = secrets/all.yaml;

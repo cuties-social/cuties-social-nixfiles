@@ -1,10 +1,10 @@
 keys:
   - &e1mo 67BEE56343B6420D550EDF2A6D617FD0A85BAADA
   - &f2k1de E7FD228DE91AEB2B
-  - &ruthenium age1msqg5q2a7av6h5rp6wncf96sa9ary22n22tzjx4nzww7xzkeug3s59h9hd
+  - &kuschelhaufen age1z8ejemlwc6hc8cuupu6wme73e4sswg9k5n77s5chwsra5x6rxgfqgfwjva
 
 creation_rules:
   - path_regex: secrets\/.*
     key_groups:
       - pgp: [ *f2k1de, *e1mo ]
-        age: [ *ruthenium ]
+        age: [ *kuschelhaufen ]

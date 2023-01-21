@@ -1,9 +1,9 @@
 final: prev:
 rec {
-  patchedMastodonSource = prev.applyPatches {
+  patchedMastodonSource = final.applyPatches {
     src = prev.fetchgit {
       url = "https://github.com/mastodon/mastodon.git";
-      rev = "v3.5.3";
+      rev = "v${prev.mastodon.version}";
       sha256 = "1z0fgyvzz7nlbg2kaxsh53c4bq4y6n5f9r8lyfa7vzvz9nwrkqiq";
     };
     patches = [
@@ -13,7 +13,6 @@ rec {
 
   mastodon = prev.mastodon.override {
     pname = "mastodon-cuties-socal";
-    version = "3.5.3";
     srcOverride = patchedMastodonSource;
   };
 

@@ -56,12 +56,9 @@ let
         type    = with types; listOf (submodule targetOpts);
       };
 
-      timerConfig = mkOption {
-        type    = types.attrs;
-        default = {
-          OnCalendar         = "daily";
-          RandomizedDelaySec = 300;
-        };
+      timerSpec = mkOption {
+        type    = types.str;
+        default = "daily";
       };
 
     };
@@ -85,6 +82,7 @@ in {
         restartIfChanged = false;
         requires         = [ "network.target" "local-fs.target" ];
         onFailure        = [ "email-notify@%i.service" ];
+        startAt          = backup.timerSpec;
 
         path = [
           pkgs.restic
@@ -99,7 +97,6 @@ in {
           RuntimeDirectory   = "restic-backup-${name}";
           CacheDirectory     = "restic-backup-${name}";
           CacheDirectoryMode = "0700";
-#          ReadWritePaths     = backup.paths;
           PrivateTmp         = true;
           ProtectHome        = true;
           ProtectSystem      = "strict";
@@ -141,14 +138,6 @@ in {
 
       }
     ) backups;
-
-    systemd.timers = mapAttrs' (
-      name: backup: nameValuePair "restic-backup-${name}" {
-        wantedBy    = [ "timers.target" ];
-        timerConfig = backup.timerConfig;
-      }
-    ) backups;
-
   };
 
 }

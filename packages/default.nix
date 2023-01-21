@@ -1,11 +1,13 @@
 final: prev:
 rec {
   patchedMastodonSource = final.applyPatches {
-    src = prev.fetchgit {
-      url = "https://github.com/mastodon/mastodon.git";
+    inherit (prev.mastodon.src) src;
+    /* src = prev.fetchFromGitHub {
+      owner = "mastodon";
+      repo = "mastodon";
       rev = "v${prev.mastodon.version}";
-      sha256 = "1z0fgyvzz7nlbg2kaxsh53c4bq4y6n5f9r8lyfa7vzvz9nwrkqiq";
-    };
+      sha256 = "sha256-/lyniar3TaQiDTaSKhfI6AF80sjo57VCjTydjv3T6kA=";
+    }; */
     patches = [
       ./mastodon/0001-Apply-previous-custies-social-ansible-patches.patch
     ];

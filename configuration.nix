@@ -11,8 +11,6 @@ in
     ./modules/restic-backups.nix
   ];
 
-  services.postgresql.package = pkgs.postgresql_10;
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   system.stateVersion = "22.11";
@@ -126,11 +124,11 @@ in
       vapidPublicKeyFile = secrets."mastodon/vapid/public_key".path;
       otpSecretFile = secrets."mastodon/otp_secret".path;
 
-      # FIXME:
-      /* elasticsearch = {
+      elasticsearch = {
         port = config.services.elasticsearch.port;
         host = "127.0.0.1";
-      }; */
+      };
+
       smtp = {
         createLocally = false;
         port = 465;

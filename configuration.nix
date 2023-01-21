@@ -6,16 +6,21 @@ let
 in
 {
   imports = [
-    # ./hardware-config.nix
+    ./hardware-config.nix
     ./prometheus.nix
     ./modules/restic-backups.nix
   ];
+
+  services.postgresql.package = pkgs.postgresql_10;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
   console.keyMap = "de";
+  networking.hostName = "kuschelhaufen";
+  networking.domain = "cuties.social";
+
   environment.systemPackages = with pkgs; [
     htop
     nano
@@ -52,6 +57,7 @@ in
   nix = {
     package = pkgs.nixVersions.stable;
     settings.auto-optimise-store = lib.mkDefault true;
+    settings.trusted-users = [ "root" "@wheel" ];
     registry.nixpkgs.flake = nixpkgs;
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -78,6 +84,12 @@ in
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9x/kL2fFqQSEyFvdEgiM2UKYAZyV1oct9alS6mweVa e1mo (ssh_0x6D617FD0A85BAADA)"
       ];
     };
+    root = {
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBfbb4m4o89EumFjE8ichX03CC/mWry0JYaz91HKVJPb e1mo"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9x/kL2fFqQSEyFvdEgiM2UKYAZyV1oct9alS6mweVa e1mo (ssh_0x6D617FD0A85BAADA)"
+      ];
+    };
   };
   security.sudo = {
     enable = true;
@@ -93,9 +105,6 @@ in
     enable = true;
     allowedTCPPorts = [ 80 443 ] ++ config.services.openssh.ports;
   };
-
-  networking.hostName = "kuschelhaufen";
-  networking.domain = "cuties.social";
 
   security.acme = {
     acceptTerms = true;
@@ -117,10 +126,11 @@ in
       vapidPublicKeyFile = secrets."mastodon/vapid/public_key".path;
       otpSecretFile = secrets."mastodon/otp_secret".path;
 
-      elasticsearch = {
+      # FIXME:
+      /* elasticsearch = {
         port = config.services.elasticsearch.port;
         host = "127.0.0.1";
-      };
+      }; */
       smtp = {
         createLocally = false;
         port = 465;
@@ -214,8 +224,37 @@ in
   };
 
   services.elasticsearch = {
-    package = pkgs.elasticsearch7;
     enable = true;
+    package = pkgs.elasticsearch7;
+  };
+
+  systemd.services."mastodon-search-deploy" = {
+    environment = lib.mkForce config.systemd.services.mastodon-web.environment;
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" "elasticsearch.service" "postgresql.service" ];
+    requires = [ "elasticsearch.service" "postgresql.service" ];
+    script = ''
+      ${mastoConfig.package}/bin/tootctl search deploy
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+
+      WorkingDirectory = mastoConfig.package;
+      User = mastoConfig.user;
+      Group = mastoConfig.group;
+
+      # Comming from
+      # https://github.com/NixOS/nixpkgs/blob/nixos-22.05/nixos/modules/services/web-apps/mastodon.nix#L45-L86
+
+      # State directory and mode
+      StateDirectory = "mastodon";
+      StateDirectoryMode = "0750";
+      # Logs directory and mode
+      LogsDirectory = "mastodon";
+      LogsDirectoryMode = "0750";
+
+      EnvironmentFile = "/var/lib/mastodon/.secrets_env";
+    };
   };
 
   programs.msmtp = {
@@ -242,7 +281,7 @@ in
     };
   };
 
-  restic-backups.mastodon-database = {
+  restic-backups.mastodon = {
     user = mastoConfig.user;
     passwordFile = config.sops.secrets."restic-repo-password".path;
     postgresDatabases = [ mastoConfig.database.name ];

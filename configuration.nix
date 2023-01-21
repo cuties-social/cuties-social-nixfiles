@@ -20,13 +20,13 @@ in
     secrets =
       let
         mastodon.owner = mastoConfig.user;
-      in
-      {
+      in {
         "mastodon/smtp_password" = mastodon;
         "mastodon/otp_secret" = mastodon;
         "mastodon/secret_key" = mastodon;
         "mastodon/vapid/private_key" = mastodon;
         "mastodon/vapid/public_key" = mastodon;
+        "kuschelhaufen-at-cuties-social" = {};
         "root_password".neededForUsers = true;
       };
   };
@@ -198,5 +198,29 @@ in
   services.elasticsearch = {
     package = pkgs.elasticsearch7;
     enable = true;
+  };
+
+    programs.msmtp = {
+    enable      = true;
+    setSendmail = false;
+    accounts    = {
+      default = {
+        auth         = true;
+        tls          = true;
+        host         = "telesto.host.static.dont-break.it";
+        port         = 465;
+        user         = "kuschelhaufen@cuties.social";
+        from         = "${config.networking.fqdn} <kuschelhaufen@cuties.social>";
+        passwordeval = "cat ${config.sops.secrets."kuschelhaufen-at-cuties-social".path}";
+      };
+    };
+  };
+
+  systemd.services."email-notify@" = {
+    serviceConfig = {
+      ExecStart = ''
+        ${pkgs.runtimeShell} -c "{ echo -n 'Subject:[${config.networking.fqdn}] Service failed: %i\n\n' &  ${pkgs.systemd}/bin/systemctl status %i;} | ${pkgs.msmtp}/bin/msmtp -v mastodon@cuties.social"
+      '';
+    };
   };
 }

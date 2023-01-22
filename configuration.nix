@@ -63,11 +63,43 @@ in
   };
 
   documentation.nixos.enable = false;
+  users.motd = ''
+                _   _
+      ___ _   _| |_(_) ___  ___
+    / __| | | | __| |/ _ \/ __|
+    | (__| |_| | |_| |  __/\__ \
+    \___|\__,_|\__|_|\___||___/
+
+                          _       _
+            ___  ___   ___(_) __ _| |
+          / __|/ _ \ / __| |/ _` | |
+          _\__ \ (_) | (__| | (_| | |
+        (_)___/\___/ \___|_|\__,_|_|
+
+                                              .
+                                    ;.  .,   ,x:
+                                cd'NX. kX :OK,
+                              ;dkkk,Xocl,o0K0
+                            ckkxdkk;,ol.0KKo,
+                ..',,',cloookkd;d:;c,.c:l:c;
+              'clllllll,',;lkkl,:cllll;llll:c.
+            .lllll;;;;;;',::::llllllc,:cll,,;'
+        .:c,llllllllllll:,lllllllllc:,cllllll,
+        :kkd,lllllllllllll:;lll,llllllllllllllll.
+      .lkkk,llllllllllllll;:ll:'llllllllllllcl:l
+    'kkkkk::lll,:llllll:' :cll:';;;;;;;';:cc:,
+    :kkkkkkocccd,llllc;cll;..'lllllllll,.....'.
+      kkkkkkkkkkx                      ..'.
+        xl. ol
+
+    ${config.networking.fqdn}
+  '';
+
   users.users = {
     root = {
       passwordFile = config.sops.secrets."root_password".path;
     };
-    f2k1de = {
+    isa = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = [
@@ -76,7 +108,7 @@ in
     };
     e1mo = {
       isNormalUser = true;
-      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBfbb4m4o89EumFjE8ichX03CC/mWry0JYaz91HKVJPb e1mo"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9x/kL2fFqQSEyFvdEgiM2UKYAZyV1oct9alS6mweVa e1mo (ssh_0x6D617FD0A85BAADA)"

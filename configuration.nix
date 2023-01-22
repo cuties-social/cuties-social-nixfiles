@@ -251,7 +251,8 @@ in
     # However by simply using mastodon-webs entire environment, we already have imagemagic and other potential runtime dependencies already installed
     environment = lib.mkForce config.systemd.services.mastodon-web.environment;
     serviceConfig = {
-      Type = "oneshot";
+      Type            = "simple";
+      RemainAfterExit = true;
 
       WorkingDirectory = mastoConfig.package;
       User = mastoConfig.user;
@@ -306,6 +307,11 @@ in
     enable = true;
     package = pkgs.elasticsearch7;
     extraJavaOptions = [ "-Xms750m" "-Xmx750m" ];
+    # Do not spam journalctl with "Elasticsearch built-in security features are not enabled." logs on search deploy
+    # https://stackoverflow.com/a/68050804
+    extraConf = ''
+      xpack.security.enabled: false
+    '';
   };
 
   systemd.services."mastodon-search-deploy" = {
@@ -317,7 +323,8 @@ in
       ${mastoConfig.package}/bin/tootctl search deploy
     '';
     serviceConfig = {
-      Type = "oneshot";
+      Type            = "simple";
+      RemainAfterExit = true;
 
       WorkingDirectory = mastoConfig.package;
       User = mastoConfig.user;

@@ -92,7 +92,7 @@ in
       kkkkkkkkkkx                      ..'.
         xl. ol
 
-    cuties.social
+    ${config.networking.fqdn}
   '';
 
   users.users = {

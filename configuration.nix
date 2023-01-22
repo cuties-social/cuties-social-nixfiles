@@ -16,8 +16,59 @@ in
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
   console.keyMap = "de";
-  networking.hostName = "kuschelhaufen";
-  networking.domain = "cuties.social";
+
+  networking = {
+    hostName = "kuschelhaufen";
+    domain = "cuties.social";
+
+    defaultGateway6 = {
+      address = "fe80::1";
+      interface = "ens3";
+    };
+    defaultGateway = {
+      address = "37.100.192.1";
+      interface = "ens3";
+    };
+
+    interfaces.ens3 = {
+      # Netcup reccomends disabling DHCP for IPv4
+      useDHCP = false;
+
+      ipv6.addresses = [{
+        address = "2a0a:4cc0:1:271::1";
+        prefixLength = 64;
+      }];
+
+      ipv4.addresses = [{
+        address = "89.58.61.90";
+        prefixLength = 22;
+      }];
+    };
+
+    nameservers = [
+      "2a03:4000:0:1::e1e6"
+      "2a03:4000:8000::fce6"
+      "46.38.225.230"
+      "46.38.252.230"
+    ];
+
+    firewall = {
+      enable = true;
+      rejectPackets = true; # Makes debugging easier
+      allowedTCPPorts = [ 80 443 ] ++ config.services.openssh.ports;
+    };
+  };
+
+  # Advised in the netcup docs
+  # https://www.netcup-wiki.de/wiki/Zus%C3%A4tzliche_IP_Adresse_konfigurieren
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.default.accept_ra" = 0;
+    "net.ipv6.conf.default.autoconf"  = 0;
+    "net.ipv6.conf.all.accept_ra"     = 0;
+    "net.ipv6.conf.all.autoconf"      = 0;
+    "net.ipv6.conf.ens3.accept_ra"    = 0;
+    "net.ipv6.conf.ens3.autoconf"     = 0;
+  };
 
   environment.systemPackages = with pkgs; [
     htop
@@ -83,19 +134,14 @@ in
       ];
     };
   };
+
   security.sudo = {
     enable = true;
     wheelNeedsPassword = false;
   };
-
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
-  };
-
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 80 443 ] ++ config.services.openssh.ports;
   };
 
   security.acme = {

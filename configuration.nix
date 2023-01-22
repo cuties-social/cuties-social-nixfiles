@@ -262,6 +262,7 @@ in
       default = {
         auth         = true;
         tls          = true;
+        tls_starttls = false;
         host         = "telesto.host.static.dont-break.it";
         port         = 465;
         user         = "kuschelhaufen@cuties.social";
@@ -274,7 +275,7 @@ in
   systemd.services."email-notify@" = {
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.runtimeShell} -c "{ echo -n 'Subject:[${config.networking.fqdn}] Service failed: %i\n\n' &  ${pkgs.systemd}/bin/systemctl status %i;} | ${pkgs.msmtp}/bin/msmtp -v mastodon@cuties.social"
+        ${pkgs.runtimeShell} -c "{ echo -n 'Subject:[${config.networking.fqdn}] Service failed: %i\n\n' &  ${pkgs.systemd}/bin/systemctl status %i;} | ${pkgs.msmtp}/bin/msmtp -v cuties@cuties.social"
       '';
     };
   };

@@ -52,7 +52,6 @@ in {
         "entropy"
         "infiniband"
         "rapl"
-        "selinux"
         "timex"
       ];
     };
@@ -81,7 +80,7 @@ in {
           job_name = "node";
           static_configs = [{
             targets = [
-              "127.0.0.1:${toString config.services.prometheus.port}"
+              "127.0.0.1:${toString config.services.prometheus.exporters.node.port}"
             ];
             labels.instance = hostName;
           }];
@@ -90,7 +89,7 @@ in {
           job_name = "statsd";
           static_configs = [{
             targets = [
-              "127.0.0.1:${toString config.services.prometheus.exporters.node.port}"
+              statsd-exporter.listenWeb
             ];
             labels.instance = hostName;
           }];
@@ -216,11 +215,11 @@ in {
         };
 
         locations."/prometheus/" = authConfig // {
-          proxyPass = "http://127.0.0.1:${toString config.services.prometheus.port}";
+          proxyPass = "http://127.0.0.1:${toString config.services.prometheus.port}/";
         };
 
         locations."/alertmanager/" = authConfig // {
-          proxyPass = "http://127.0.0.1:${toString config.services.prometheus.alertmanager.port}";
+          proxyPass = "http://127.0.0.1:${toString config.services.prometheus.alertmanager.port}/";
         };
       };
     };

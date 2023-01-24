@@ -161,7 +161,7 @@ in {
         inhibit_rules = [
           {
             target_matchers = ["alertname = ReducedAvailableMemory"];
-            source_matchers = ["alertname =~ (Very)LowAvailableMemory"];
+            source_matchers = ["alertname =~ (Very)?LowAvailableMemory"];
             equal = ["instance"];
           }
           {
@@ -171,7 +171,7 @@ in {
           }
           {
             target_matchers = ["alertname = ElevatedLoad"];
-            source_matchers = ["alertname =~ (Very)HighLoad"];
+            source_matchers = ["alertname =~ (Very)?HighLoad"];
             equal = ["instance"];
           }
           {

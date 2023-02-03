@@ -190,8 +190,7 @@ in
   services.mastodon =
     let
       secrets = config.sops.secrets;
-    in
-    {
+    in {
       enable = true;
       localDomain = "cuties.social";
       configureNginx = true;
@@ -205,6 +204,7 @@ in
       elasticsearch = {
         port = config.services.elasticsearch.port;
         host = "127.0.0.1";
+        extraJavaOptions = [ "-Xms750m" "-Xmx750m" ];
       };
 
       smtp = {

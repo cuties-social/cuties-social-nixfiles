@@ -190,8 +190,7 @@ in
   services.mastodon =
     let
       secrets = config.sops.secrets;
-    in
-    {
+    in {
       enable = true;
       localDomain = "cuties.social";
       configureNginx = true;
@@ -302,6 +301,7 @@ in
   services.elasticsearch = {
     enable = true;
     package = pkgs.elasticsearch7;
+    extraJavaOptions = [ "-Xms750m" "-Xmx750m" ];
   };
 
   systemd.services."mastodon-search-deploy" = {

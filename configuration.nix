@@ -223,6 +223,10 @@ in
         MAX_DISPLAY_NAME_CHARS = "100";
         MAX_BIO_CHARS = "1000";
         MAX_PROFILE_FIELDS = "10";
+
+        SMTP_ENABLE_STARTTLS_AUTO = "false";
+        SMTP_ENABLE_STARTTLS = "never";
+        SMTP_TLS = "true";
       };
     };
 

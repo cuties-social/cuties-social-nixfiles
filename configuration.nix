@@ -62,6 +62,7 @@ in
       enable = true;
       rejectPackets = true; # Makes debugging easier
       allowedTCPPorts = [ 80 443 ] ++ config.services.openssh.ports;
+      logRefusedConnections = false;
     };
   };
 
@@ -227,6 +228,10 @@ in
         SMTP_ENABLE_STARTTLS_AUTO = "false";
         SMTP_ENABLE_STARTTLS = "never";
         SMTP_TLS = "true";
+
+        # Reduce absolute spam of (every request^1) mastodon and sidekiq logs
+        # ^1: https://docs.joinmastodon.org/admin/config/#rails_log_level
+        RAILS_LOG_LEVEL = "warn";
       };
     };
 
@@ -391,4 +396,10 @@ in
   };
 
   systemd.services.restic-backup-mastodon.serviceConfig.SupplementaryGroups = config.systemd.services.redis-mastodon.serviceConfig.Group;
+
+  services.journald.extraConfig = "SystemMaxUse=512M";
+  services.logrotate.settings.nginx = {
+    frequency = "daily";
+    rotate = "14";
+  };
 }

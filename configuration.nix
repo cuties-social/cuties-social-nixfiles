@@ -153,6 +153,7 @@ in
     ${config.networking.fqdn}
   '';
 
+  users.mutableUsers = true;
   users.users = {
     root = {
       passwordFile = config.sops.secrets."root_password".path;

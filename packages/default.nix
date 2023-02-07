@@ -9,7 +9,8 @@ rec {
       sha256 = "sha256-/lyniar3TaQiDTaSKhfI6AF80sjo57VCjTydjv3T6kA=";
     }; */
     patches = [
-      ./mastodon/0001-Apply-previous-custies-social-ansible-patches.patch
+      ./mastodon/allpatches.patch
+      ./mastodon/troet.patch
     ];
   };
 

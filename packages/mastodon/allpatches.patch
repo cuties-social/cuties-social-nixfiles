@@ -1,24 +1,5 @@
-From bd6f65b079f1cb9681a0265627ad3f145c8a9ea0 Mon Sep 17 00:00:00 2001
-From: Moritz 'e1mo' Fromm <git@e1mo.de>
-Date: Sat, 12 Nov 2022 17:59:02 +0100
-Subject: [PATCH] Apply previous custies-social-ansible patches
-
-Co-Authored-By: Isa <hi@f2k1.de>
----
- .../mastodon/components/animated_number.js         |  8 +-------
- .../features/compose/components/compose_form.js    |  8 +++++---
- .../features/compose/components/poll_form.js       |  7 +++++--
- app/models/account.rb                              | 13 +++++++++----
- app/serializers/initial_state_serializer.rb        | 12 +++++++++++-
- app/serializers/rest/instance_serializer.rb        | 14 +++++++++++++-
- app/validators/poll_validator.rb                   |  5 +++--
- app/validators/status_length_validator.rb          |  2 +-
- app/views/settings/profiles/show.html.haml         |  4 ++--
- spec/models/account_spec.rb                        |  4 ++--
- 10 files changed, 52 insertions(+), 25 deletions(-)
-
 diff --git a/app/javascript/mastodon/components/animated_number.js b/app/javascript/mastodon/components/animated_number.js
-index fbe948c5b..e6a98bc91 100644
+index b1aebc73e..de5887e40 100644
 --- a/app/javascript/mastodon/components/animated_number.js
 +++ b/app/javascript/mastodon/components/animated_number.js
 @@ -6,13 +6,7 @@ import spring from 'react-motion/lib/spring';
@@ -32,12 +13,12 @@ index fbe948c5b..e6a98bc91 100644
 -  } else {
 -    return '1+';
 -  }
-+  return count;
++  return Math.max(0, count);
  };
  
  export default class AnimatedNumber extends React.PureComponent {
 diff --git a/app/javascript/mastodon/features/compose/components/compose_form.js b/app/javascript/mastodon/features/compose/components/compose_form.js
-index 4620d1c43..28b77298a 100644
+index 6a65f44da..e07f19083 100644
 --- a/app/javascript/mastodon/features/compose/components/compose_form.js
 +++ b/app/javascript/mastodon/features/compose/components/compose_form.js
 @@ -20,6 +20,8 @@ import { isMobile } from '../../../is_mobile';
@@ -57,32 +38,30 @@ index 4620d1c43..28b77298a 100644
 +    return !(isSubmitting || isUploading || isChangingUpload || length(fulltext) > maxChars || (isOnlyWhitespace && !anyMedia));
    }
  
-   handleSubmit = () => {
-@@ -272,8 +274,8 @@ class ComposeForm extends ImmutablePureComponent {
-             <LanguageDropdown />
+   handleSubmit = (e) => {
+@@ -277,7 +279,7 @@ class ComposeForm extends ImmutablePureComponent {
            </div>
  
--          <div className='character-counter__wrapper'>
+           <div className='character-counter__wrapper'>
 -            <CharacterCounter max={500} text={this.getFulltextForCharacterCounting()} />
-+         <div className='character-counter__wrapper'>
 +            <CharacterCounter max={maxChars} text={this.getFulltextForCharacterCounting()} />
            </div>
          </div>
  
 diff --git a/app/javascript/mastodon/features/compose/components/poll_form.js b/app/javascript/mastodon/features/compose/components/poll_form.js
-index db49f90eb..f047f7d7b 100644
+index ede29b8a0..e84a89c51 100644
 --- a/app/javascript/mastodon/features/compose/components/poll_form.js
 +++ b/app/javascript/mastodon/features/compose/components/poll_form.js
-@@ -7,6 +7,9 @@ import IconButton from 'mastodon/components/icon_button';
+@@ -6,6 +6,9 @@ import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
+ import IconButton from 'mastodon/components/icon_button';
  import Icon from 'mastodon/components/icon';
  import AutosuggestInput from 'mastodon/components/autosuggest_input';
- import classNames from 'classnames';
 +import initialState from '../../../initial_state';
 +const maxOptions = initialState.max_poll_options;
 +const minOptions = initialState.min_poll_options;
+ import classNames from 'classnames';
  
  const messages = defineMessages({
-   option_placeholder: { id: 'compose_form.poll.option_placeholder', defaultMessage: 'Choice {number}' },
 @@ -102,7 +105,7 @@ class Option extends React.PureComponent {
          </label>
  
@@ -96,31 +75,30 @@ index db49f90eb..f047f7d7b 100644
          </ul>
  
          <div className='poll__footer'>
--          <button disabled={options.size >= 4} className='button button-secondary' onClick={this.handleAddOption}><Icon id='plus' /> <FormattedMessage {...messages.add_option} /></button>
-+          <button disabled={options.size >= maxOptions} className='button button-secondary' onClick={this.handleAddOption}><Icon id='plus' /> <FormattedMessage {...messages.add_option} /></button>
+-          <button type='button' disabled={options.size >= 4} className='button button-secondary' onClick={this.handleAddOption}><Icon id='plus' /> <FormattedMessage {...messages.add_option} /></button>
++          <button type='button' disabled={options.size >= maxOptions} className='button button-secondary' onClick={this.handleAddOption}><Icon id='plus' /> <FormattedMessage {...messages.add_option} /></button>
  
            {/* eslint-disable-next-line jsx-a11y/no-onchange */}
            <select value={expiresIn} onChange={this.handleSelectDuration}>
 diff --git a/app/models/account.rb b/app/models/account.rb
-index bd94142c4..7ab3db6aa 100644
+index fc7359cfc..ce65eab57 100644
 --- a/app/models/account.rb
 +++ b/app/models/account.rb
-@@ -81,6 +81,11 @@ class Account < ApplicationRecord
+@@ -81,6 +81,10 @@ class Account < ApplicationRecord
+   enum protocol: [:ostatus, :activitypub]
    enum suspension_origin: [:local, :remote], _prefix: true
  
++  MAX_DISPLAY_NAME_LENGTH = (ENV['MAX_DISPLAY_NAME_CHARS'] || 30).to_i
++  MAX_NOTE_LENGTH = (ENV['MAX_BIO_CHARS'] || 512).to_i
++  MAX_FIELDS = (ENV['MAX_PROFILE_FIELDS'] || 4).to_i
++
    validates :username, presence: true
-+# BEGIN ANSIBLE MANAGED BLOCK
-+MAX_DISPLAY_NAME_LENGTH = (ENV['MAX_DISPLAY_NAME_CHARS'] || 30).to_i
-+MAX_NOTE_LENGTH = (ENV['MAX_BIO_CHARS'] || 512).to_i
-+MAX_FIELDS = (ENV['MAX_PROFILE_FIELDS'] || 4).to_i
-+# END ANSIBLE MANAGED BLOCK
    validates_with UniqueUsernameValidator, if: -> { will_save_change_to_username? }
  
-   # Remote user validations
-@@ -89,9 +94,9 @@ class Account < ApplicationRecord
+@@ -90,9 +94,9 @@ class Account < ApplicationRecord
    # Local user validations
    validates :username, format: { with: /\A[a-z0-9_]+\z/i }, length: { maximum: 30 }, if: -> { local? && will_save_change_to_username? && actor_type != 'Application' }
-   validates_with UnreservedUsernameValidator, if: -> { local? && will_save_change_to_username? }
+   validates_with UnreservedUsernameValidator, if: -> { local? && will_save_change_to_username? && actor_type != 'Application' }
 -  validates :display_name, length: { maximum: 30 }, if: -> { local? && will_save_change_to_display_name? }
 -  validates :note, note_length: { maximum: 500 }, if: -> { local? && will_save_change_to_note? }
 -  validates :fields, length: { maximum: 4 }, if: -> { local? && will_save_change_to_fields? }
@@ -130,7 +108,7 @@ index bd94142c4..7ab3db6aa 100644
  
    scope :remote, -> { where.not(domain: nil) }
    scope :local, -> { where(domain: nil) }
-@@ -325,7 +330,7 @@ class Account < ApplicationRecord
+@@ -324,7 +328,7 @@ class Account < ApplicationRecord
      self[:fields] = fields
    end
  
@@ -140,19 +118,19 @@ index bd94142c4..7ab3db6aa 100644
    def build_fields
      return if fields.size >= DEFAULT_FIELDS_SIZE
 diff --git a/app/serializers/initial_state_serializer.rb b/app/serializers/initial_state_serializer.rb
-index 34190a91d..8e948cc4e 100644
+index 8d3f4f87d..08ef0925b 100644
 --- a/app/serializers/initial_state_serializer.rb
 +++ b/app/serializers/initial_state_serializer.rb
-@@ -2,7 +2,7 @@
+@@ -5,7 +5,7 @@ class InitialStateSerializer < ActiveModel::Serializer
  
- class InitialStateSerializer < ActiveModel::Serializer
    attributes :meta, :compose, :accounts,
--             :media_attachments, :settings,
-+             :media_attachments, :settings, :max_toot_chars, :min_poll_options, :max_poll_options
-              :languages
+              :media_attachments, :settings,
+-             :languages
++             :languages, :max_toot_chars, :min_poll_options, :max_poll_options
  
    has_one :push_subscription, serializer: REST::WebPushSubscriptionSerializer
-@@ -83,6 +83,16 @@ class InitialStateSerializer < ActiveModel::Serializer
+   has_one :role, serializer: REST::RoleSerializer
+@@ -105,6 +105,16 @@ class InitialStateSerializer < ActiveModel::Serializer
      LanguagesHelper::SUPPORTED_LOCALES.map { |(key, value)| [key, value[0], value[1]] }
    end
  
@@ -170,39 +148,37 @@ index 34190a91d..8e948cc4e 100644
  
    def instance_presenter
 diff --git a/app/serializers/rest/instance_serializer.rb b/app/serializers/rest/instance_serializer.rb
-index 0dc44b623..74dfe4a32 100644
+index 5ae1099d0..90f6302c6 100644
 --- a/app/serializers/rest/instance_serializer.rb
 +++ b/app/serializers/rest/instance_serializer.rb
-@@ -5,7 +5,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
+@@ -11,7 +11,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
  
-   attributes :uri, :title, :short_description, :description, :email,
-              :version, :urls, :stats, :thumbnail,
--             :languages, :registrations, :approval_required, :invites_enabled,
-+             :languages, :registrations, :approval_required, :invites_enabled, :max_toot_chars, :min_poll_options, :max_poll_options
-              :configuration
+   attributes :domain, :title, :version, :source_url, :description,
+              :usage, :thumbnail, :languages, :configuration,
+-             :registrations
++             :registrations, :max_toot_chars, :min_poll_options, :max_poll_options
  
-   has_one :contact_account, serializer: REST::AccountSerializer
-@@ -96,6 +96,18 @@ class REST::InstanceSerializer < ActiveModel::Serializer
-     Setting.min_invite_role == 'user'
+   has_one :contact, serializer: ContactSerializer
+   has_many :rules, serializer: REST::RuleSerializer
+@@ -87,6 +87,16 @@ class REST::InstanceSerializer < ActiveModel::Serializer
+     }
    end
  
 +  def max_toot_chars
 +    StatusLengthValidator::MAX_CHARS
 +  end
-+
 +  def min_poll_options
 +    PollValidator::MIN_OPTIONS
 +  end
-+
 +  def max_poll_options
 +    PollValidator::MAX_OPTIONS
 +  end
 +
    private
  
-   def instance_presenter
+   def registrations_enabled?
 diff --git a/app/validators/poll_validator.rb b/app/validators/poll_validator.rb
-index a32727796..8b444cea9 100644
+index a32727796..d9798a229 100644
 --- a/app/validators/poll_validator.rb
 +++ b/app/validators/poll_validator.rb
 @@ -1,7 +1,8 @@
@@ -210,8 +186,8 @@ index a32727796..8b444cea9 100644
  
  class PollValidator < ActiveModel::Validator
 -  MAX_OPTIONS      = 4
-+  MIN_OPTIONS = (ENV["MIN_POLL_OPTIONS"] || 2).to_i
-+  MAX_OPTIONS = (ENV["MAX_POLL_OPTIONS"] || 4).to_i
++  MIN_OPTIONS      = (ENV["MIN_POLL_OPTIONS"] || 2).to_i
++  MAX_OPTIONS      = (ENV["MAX_POLL_OPTIONS"] || 4).to_i
    MAX_OPTION_CHARS = 50
    MAX_EXPIRATION   = 1.month.freeze
    MIN_EXPIRATION   = 5.minutes.freeze
@@ -220,7 +196,7 @@ index a32727796..8b444cea9 100644
      current_time = Time.now.utc
  
 -    poll.errors.add(:options, I18n.t('polls.errors.too_few_options')) unless poll.options.size > 1
-+    poll.errors.add(:options, I18n.t('polls.errors.too_few_options')) unless poll.options.size >= MIN_OPTIONS
++    poll.errors.add(:options, I18n.t('polls.errors.too_few_options')) unless poll.options.size > MIN_OPTIONS
      poll.errors.add(:options, I18n.t('polls.errors.too_many_options', max: MAX_OPTIONS)) if poll.options.size > MAX_OPTIONS
      poll.errors.add(:options, I18n.t('polls.errors.over_character_limit', max: MAX_OPTION_CHARS)) if poll.options.any? { |option| option.mb_chars.grapheme_length > MAX_OPTION_CHARS }
      poll.errors.add(:options, I18n.t('polls.errors.duplicate_options')) unless poll.options.uniq.size == poll.options.size
@@ -238,7 +214,7 @@ index e107912b7..12d1c0953 100644
    URL_PLACEHOLDER = 'x' * 23
  
 diff --git a/app/views/settings/profiles/show.html.haml b/app/views/settings/profiles/show.html.haml
-index fe9666d84..b84d06c27 100644
+index 3067b3737..a6d698f54 100644
 --- a/app/views/settings/profiles/show.html.haml
 +++ b/app/views/settings/profiles/show.html.haml
 @@ -9,8 +9,8 @@
@@ -253,7 +229,7 @@ index fe9666d84..b84d06c27 100644
    .fields-row
      .fields-row__column.fields-row__column-6
 diff --git a/spec/models/account_spec.rb b/spec/models/account_spec.rb
-index dc0ca3da3..17b97668e 100644
+index edae05f9d..4d6357fe4 100644
 --- a/spec/models/account_spec.rb
 +++ b/spec/models/account_spec.rb
 @@ -767,8 +767,8 @@ RSpec.describe Account, type: :model do
@@ -262,11 +238,8 @@ index dc0ca3da3..17b97668e 100644
  
 -      it 'is invalid if the note is longer than 500 characters' do
 -        account = Fabricate.build(:account, note: Faker::Lorem.characters(number: 501))
-+      it 'is invalid if the note is longer than 1000 characters' do
-+        account = Fabricate.build(:account, note: Faker::Lorem.characters(number: 1001))
++      it 'is invalid if the note is longer than {{ mastodon_bio_character_limit }} characters' do
++        account = Fabricate.build(:account, note: Faker::Lorem.characters(number: {{ mastodon_bio_character_limit+1 }}))
          account.valid?
          expect(account).to model_have_error_on_field(:note)
        end
--- 
-2.38.1
-

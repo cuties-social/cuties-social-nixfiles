@@ -362,6 +362,11 @@ in
     };
   };
 
+  systemd.services.redis-mastodon.serviceConfig = {
+    UMask = lib.mkForce "0027"; # 0077 is default in the mastodon module
+    StateDirectoryMode = lib.mkForce "0750"; # 0700 is default in the mastodon module
+  };
+
   restic-backups.mastodon = {
     user = mastoConfig.user;
     passwordFile = config.sops.secrets."restic-repo-password".path;
@@ -377,4 +382,6 @@ in
     }];
     timerSpec = "*-*-* 05:11:00";
   };
+
+  systemd.services.restic-backup-mastodon.serviceConfig.SupplementaryGroups = config.systemd.services.redis-mastodon.serviceConfig.Group;
 }

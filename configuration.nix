@@ -194,7 +194,7 @@ in
       enable = true;
       localDomain = "cuties.social";
       configureNginx = true;
-      automaticMigrations = false;
+      automaticMigrations = true;
 
       secretKeyBaseFile = secrets."mastodon/secret_key".path;
       vapidPrivateKeyFile = secrets."mastodon/vapid/private_key".path;

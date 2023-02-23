@@ -111,6 +111,10 @@ in
   };
 
   nix = {
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 7d";
+    };
     package = pkgs.nixVersions.stable;
     settings.auto-optimise-store = lib.mkDefault true;
     settings.trusted-users = [ "root" "@wheel" ];

@@ -50,7 +50,7 @@ groups:
           summary: "Low free memory on {{ $labels.instance }}"
 
       - alert: ReducedAvailableMemory
-        expr: node_memory_MemAvailable_percentage < 20
+        expr: node_memory_MemAvailable_percentage < 15
         # Detect constant high memory usage as a potential sign that the host could maybe need some more memory
         for: 1h
         labels:

@@ -373,7 +373,7 @@ in
     postgresDatabases = [ mastoConfig.database.name ];
     paths = [
       "/var/lib/mastodon/public-system/media_attachments" # Hardcoded in the NixOS module
-      config.services.redis.servers.mastodon.settings.dir # Mastodon advised: https://docs.joinmastodon.org/admin/backups/#redis
+      (config.services.redis.servers.mastodon.settings.dir + "/dump.rdb") # Mastodon advised: https://docs.joinmastodon.org/admin/backups/#redis
     ];
     targets = [{
       user = "cutiessocial";

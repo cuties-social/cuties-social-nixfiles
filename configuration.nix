@@ -355,9 +355,10 @@ in
   };
 
   systemd.services."email-notify@" = {
+    path = [ pkgs.util-linux ];
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.runtimeShell} -c "{ echo -n 'Subject:[${config.networking.fqdn}] Service failed: %i\n\n' &  ${pkgs.systemd}/bin/systemctl status %i;} | ${pkgs.msmtp}/bin/msmtp -v cuties@cuties.social"
+        ${pkgs.runtimeShell} -c "{ echo -n 'Message-ID: <$(uuidgen)@${config.networking.fqdn}>t\nSubject:[${config.networking.fqdn}] Service failed: %i\n\n' &  ${pkgs.systemd}/bin/systemctl status %i;} | ${pkgs.msmtp}/bin/msmtp -v cuties@cuties.social"
       '';
     };
   };

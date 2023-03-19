@@ -201,6 +201,11 @@ in
       vapidPublicKeyFile = secrets."mastodon/vapid/public_key".path;
       otpSecretFile = secrets."mastodon/otp_secret".path;
 
+      mediaAutoRemove = {
+        enable = true;
+        olderThanDays = 21;
+      };
+
       elasticsearch = {
         port = config.services.elasticsearch.port;
         host = "127.0.0.1";

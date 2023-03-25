@@ -62,6 +62,7 @@ in
       enable = true;
       rejectPackets = true; # Makes debugging easier
       allowedTCPPorts = [ 80 443 ] ++ config.services.openssh.ports;
+      logRefusedConnections = false;
     };
   };
 
@@ -110,6 +111,10 @@ in
   };
 
   nix = {
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 7d";
+    };
     package = pkgs.nixVersions.stable;
     settings.auto-optimise-store = lib.mkDefault true;
     settings.trusted-users = [ "root" "@wheel" ];
@@ -152,6 +157,7 @@ in
     ${config.networking.fqdn}
   '';
 
+  users.mutableUsers = true;
   users.users = {
     root = {
       passwordFile = config.sops.secrets."root_password".path;
@@ -232,6 +238,10 @@ in
         SMTP_ENABLE_STARTTLS_AUTO = "false";
         SMTP_ENABLE_STARTTLS = "never";
         SMTP_TLS = "true";
+
+        # Reduce absolute spam of (every request^1) mastodon and sidekiq logs
+        # ^1: https://docs.joinmastodon.org/admin/config/#rails_log_level
+        RAILS_LOG_LEVEL = "warn";
       };
     };
 
@@ -256,7 +266,8 @@ in
     # However by simply using mastodon-webs entire environment, we already have imagemagic and other potential runtime dependencies already installed
     environment = lib.mkForce config.systemd.services.mastodon-web.environment;
     serviceConfig = {
-      Type = "oneshot";
+      Type            = "simple";
+      RemainAfterExit = true;
 
       WorkingDirectory = mastoConfig.package;
       User = mastoConfig.user;
@@ -311,6 +322,11 @@ in
     enable = true;
     package = pkgs.elasticsearch7;
     extraJavaOptions = [ "-Xms750m" "-Xmx750m" ];
+    # Do not spam journalctl with "Elasticsearch built-in security features are not enabled." logs on search deploy
+    # https://stackoverflow.com/a/68050804
+    extraConf = ''
+      xpack.security.enabled: false
+    '';
   };
 
   systemd.services."mastodon-search-deploy" = {
@@ -322,7 +338,8 @@ in
       ${mastoConfig.package}/bin/tootctl search deploy
     '';
     serviceConfig = {
-      Type = "oneshot";
+      Type            = "simple";
+      RemainAfterExit = true;
 
       WorkingDirectory = mastoConfig.package;
       User = mastoConfig.user;
@@ -390,4 +407,10 @@ in
   };
 
   systemd.services.restic-backup-mastodon.serviceConfig.SupplementaryGroups = config.systemd.services.redis-mastodon.serviceConfig.Group;
+
+  services.journald.extraConfig = "SystemMaxUse=512M";
+  services.logrotate.settings.nginx = {
+    frequency = "daily";
+    rotate = "14";
+  };
 }

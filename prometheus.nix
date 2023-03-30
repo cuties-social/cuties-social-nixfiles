@@ -189,10 +189,12 @@ in {
         "78.47.96.99"
         "89.58.62.171"
         "37.221.196.131"
+        "195.39.246.32/29"
         "::1"
         "2a0a:4cc0:1:2d7::1"
         "2a01:4f8:c17:88d8::1"
         "2a03:4000:9:f8::1"
+        "2a0f:4ac0:acab::/64"
       ];
       authConfig = {
         basicAuthFile = config.sops.secrets."prometheus_htpasswd".path;

@@ -9,7 +9,7 @@
 
   outputs = { self, nixpkgs, sops-nix }: let
     overlays = [
-      sops-nix.overlay
+      sops-nix.overlays.default
       (import ./packages/default.nix)
     ];
     pkgs = import nixpkgs {

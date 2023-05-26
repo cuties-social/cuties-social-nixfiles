@@ -36,7 +36,7 @@ index 6a65f44da..e07f19083 100644
  
 -    return !(isSubmitting || isUploading || isChangingUpload || length(fulltext) > 500 || (isOnlyWhitespace && !anyMedia));
 +    return !(isSubmitting || isUploading || isChangingUpload || length(fulltext) > maxChars || (isOnlyWhitespace && !anyMedia));
-   }
+   };
  
    handleSubmit = (e) => {
 @@ -277,7 +279,7 @@ class ComposeForm extends ImmutablePureComponent {

@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -9,7 +9,7 @@
 
   outputs = { self, nixpkgs, sops-nix }: let
     overlays = [
-      sops-nix.overlay
+      sops-nix.overlays.default
       (import ./packages/default.nix)
     ];
     pkgs = import nixpkgs {

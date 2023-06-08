@@ -252,7 +252,7 @@ in
       for category in ${pkgs.customEmojis}/*; do
         filename=''${category##*/}
         category_name="''${filename%%.*}"
-        category_name_arg="--category \"''${category_name}\""
+        category_name_arg="--category ''${category_name}"
         if [ "$category_name" = "uncategorized" ]; then
           category_name_arg=""
         fi

@@ -1,0 +1,28 @@
+name: "Build system config"
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v21
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: run nix flake checks
+        run: |
+          nix flake check --no-build | tee flake-check-output
+          echo "## Flake check" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          cat flake-check-output >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+      - name: Build Kuschelhaufen
+        run: |
+          echo "## Built kuschelhaufen" >> $GITHUB_STEP_SUMMARY
+          build_cmd="nix build .#nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
+          $build_cmd
+          out_path=$($build_cmd --print-out-paths)
+          echo -e "\x1b[32;1mSuccessfully built .#nixosConfigurations.kuschelhaufen\x1b[0m"
+          echo -n "\`${out_path}\`" >> $GITHUB_STEP_SUMMARY

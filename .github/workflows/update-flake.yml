@@ -1,15 +1,15 @@
-name: update-flake-lock
+name: Update flake lock and build systems
 on:
   workflow_dispatch: # allows manual triggering
   schedule:
     - cron: '15 12 1,15 * *'
 
 jobs:
-  lockfile:
+  flake-update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v4
       - name: Update flake.lock

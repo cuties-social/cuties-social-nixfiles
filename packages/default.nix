@@ -24,8 +24,8 @@ rec {
     src = prev.fetchFromGitHub {
       owner = "cuties-social";
       repo = "custom-emojis";
-      rev = "576e7da7c7f3dff6876caab6ad49403b516d1b00";
-      sha256 = "3xdiqpuwb6vvDY1x8mkYcXOwyiVnWfRRdhh6Zb3GP4E=";
+      rev = "ea8575bfed2c6f259d04f3761a8781dc1ce3387d";
+      hash = "sha256-XROjTzXHCDb/U9SR4McTrbcUSqPGC1eGH9YeVJcRMa8=";
     };
 
     buildInputs = with final.pkgs; [

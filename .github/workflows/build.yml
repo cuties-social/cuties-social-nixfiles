@@ -20,7 +20,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
       - name: Build Kuschelhaufen
         run: |
-          echo "## Built kuschelhaufen" >> $GITHUB_STEP_SUMMARY
+          echo "## Build kuschelhaufen" >> $GITHUB_STEP_SUMMARY
           build_cmd="nix build .#nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
           $build_cmd
           out_path=$($build_cmd --print-out-paths)

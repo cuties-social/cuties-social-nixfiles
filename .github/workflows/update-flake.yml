@@ -19,3 +19,22 @@ jobs:
           pr-labels: |                  # Labels to be set on the PR
             dependencies
             automated
+      - name: Build Kuschelhaufen
+        run: |
+          echo "## Build kuschelhaufen" >> $GITHUB_STEP_SUMMARY
+          build_cmd="nix build .#nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
+          $build_cmd
+          out_path=$($build_cmd --print-out-paths)
+          echo -e "\x1b[32;1mSuccessfully built .#nixosConfigurations.kuschelhaufen\x1b[0m"
+          echo -n "\`${out_path}\`" >> $GITHUB_STEP_SUMMARY
+      - name: nix store diff-closures
+        if: github.event_name  == 'pull_request'
+        run: |
+          host_drv="nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
+          # In case this fails, the action will fail too (with the tee, the action somehow succeded even tho diff-closures failed)
+          # since the builds are locally cached, running it twice doesn't take much time at all
+          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}"
+          echo "## Closures difference" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

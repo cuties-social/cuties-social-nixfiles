@@ -32,8 +32,9 @@ jobs:
           host_drv="nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
           # In case this fails, the action will fail too (with the tee, the action somehow succeded even tho diff-closures failed)
           # since the builds are locally cached, running it twice doesn't take much time at all
-          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}"
+          # And by doing this here, we get nice, colored, output
+          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" --quiet
           echo "## Closures difference" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" >> $GITHUB_STEP_SUMMARY
+          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" | sed -e 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -32,26 +32,9 @@
         "type": "github"
       }
     },
-    "nixpkgs_release_branch": {
-      "locked": {
-        "lastModified": 1690892192,
-        "narHash": "sha256-Upe0iAfAGL7r0NGgY47R3rUbsAPIah+3zZFB9YKevEc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "519676d102838a2345cb0f87ccddc517c6aee06f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "release-23.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
-        "nixpkgs_release_branch": "nixpkgs_release_branch",
         "sops-nix": "sops-nix"
       }
     },

@@ -1,17 +1,15 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
-    nixpkgs_release_branch.url = "github:NixOS/nixpkgs/release-23.05";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, sops-nix, nixpkgs_release_branch }: let
+  outputs = { self, nixpkgs, sops-nix }: let
     overlays = [
       sops-nix.overlays.default
-      (_: prev: { inherit (nixpkgs_release_branch.legacyPackages.${prev.system}) mastodon; })
       (import ./packages/default.nix)
     ];
     pkgs = import nixpkgs {

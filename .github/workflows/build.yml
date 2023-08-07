@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v21
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+      - name: Run the Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
       - name: run nix flake checks
         run: |
           nix flake check --no-build | tee flake-check-output
@@ -32,8 +33,16 @@ jobs:
           host_drv="nixosConfigurations.kuschelhaufen.config.system.build.toplevel"
           # In case this fails, the action will fail too (with the tee, the action somehow succeded even tho diff-closures failed)
           # since the builds are locally cached, running it twice doesn't take much time at all
-          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}"
+          # And by doing this here, we get nice, colored, output
+          prev_flake="github:${GITHUB_REPOSITORY}"
+          final_flake="."
+          prev_mastodon_version=$(nix eval "${prev_flake}#mastodon.version" --quiet --raw)
+          final_mastodon_version=$(nix eval "${final_flake}#mastodon.version" --quiet --raw)
+          if [[ $prev_mastodon_version != $final_mastodon_version ]]; then
+            echo "**Mastodon version has changed from** $prev_mastodon_version to **${final_mastodon_version}**"
+          fi
+          nix store diff-closures "${prev_flake}#${host_drv}" "${final_flake}#${host_drv}" --quiet
           echo "## Closures difference" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" >> $GITHUB_STEP_SUMMARY
+          nix store diff-closures "github:${GITHUB_REPOSITORY}#${host_drv}" ".#${host_drv}" | sed -e 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

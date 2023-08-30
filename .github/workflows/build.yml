@@ -39,7 +39,7 @@ jobs:
           prev_mastodon_version=$(nix eval "${prev_flake}#mastodon.version" --quiet --raw)
           final_mastodon_version=$(nix eval "${final_flake}#mastodon.version" --quiet --raw)
           if [[ $prev_mastodon_version != $final_mastodon_version ]]; then
-            echo "**Mastodon version has changed from** $prev_mastodon_version to **${final_mastodon_version}**"
+            echo "**Mastodon version has changed from** $prev_mastodon_version to **${final_mastodon_version}**" >> $GITHUB_STEP_SUMMARY
           fi
           nix store diff-closures "${prev_flake}#${host_drv}" "${final_flake}#${host_drv}" --quiet
           echo "## Closures difference" >> $GITHUB_STEP_SUMMARY

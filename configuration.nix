@@ -413,4 +413,9 @@ in
     frequency = "daily";
     rotate = "14";
   };
+
+  swapDevices = [ {
+    device = "/var/lib/swapfile";
+    size = 2*1024;
+  } ];
 }

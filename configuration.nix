@@ -160,7 +160,7 @@ in
   users.mutableUsers = true;
   users.users = {
     root = {
-      passwordFile = config.sops.secrets."root_password".path;
+      hashedPasswordFile = config.sops.secrets."root_password".path;
     };
     isa = {
       isNormalUser = true;
@@ -201,6 +201,7 @@ in
       localDomain = "cuties.social";
       configureNginx = true;
       automaticMigrations = true;
+      streamingProcesses = 3;
 
       secretKeyBaseFile = secrets."mastodon/secret_key".path;
       vapidPrivateKeyFile = secrets."mastodon/vapid/private_key".path;

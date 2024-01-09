@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "custom-emojis": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701626730,
+        "narHash": "sha256-nicCkl0VWCoSM98JDhEZUnN9VTrhUfrkngk6mXJdxpk=",
+        "owner": "cuties-social",
+        "repo": "custom-emojis",
+        "rev": "7bcc7d06cd871e69b2dd666348cf81f23e10a87d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cuties-social",
+        "repo": "custom-emojis",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1704420045,
@@ -34,6 +50,7 @@
     },
     "root": {
       "inputs": {
+        "custom-emojis": "custom-emojis",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
       }

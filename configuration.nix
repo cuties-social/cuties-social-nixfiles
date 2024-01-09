@@ -408,6 +408,8 @@ in
 
   systemd.services.restic-backup-mastodon.serviceConfig.SupplementaryGroups = config.systemd.services.redis-mastodon.serviceConfig.Group;
 
+  services.nginx.clientMaxBodySize = "100m";
+
   services.journald.extraConfig = "SystemMaxUse=512M";
   services.logrotate.settings.nginx = {
     frequency = "daily";

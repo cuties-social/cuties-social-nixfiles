@@ -1,4 +1,4 @@
-final: prev:
+inputs: final: prev:
 rec {
   mastodon = prev.mastodon.override {
     pname = "mastodon-cuties-socal";
@@ -10,12 +10,7 @@ rec {
 
   customEmojis = prev.stdenv.mkDerivation {
     name = "custom-emojis-cuties-social";
-    src = prev.fetchFromGitHub {
-      owner = "cuties-social";
-      repo = "custom-emojis";
-      rev = "ea8575bfed2c6f259d04f3761a8781dc1ce3387d";
-      hash = "sha256-XROjTzXHCDb/U9SR4McTrbcUSqPGC1eGH9YeVJcRMa8=";
-    };
+    src = inputs.custom-emojis;
 
     buildInputs = with final.pkgs; [
       gnutar

@@ -6,8 +6,7 @@ $ nix build .\#nixosConfigurations.kuschelhaufen.config.system.build.toplevel -L
 ```
 # Remote deploy
 
-```
-# Wo zeigt der result symlink hin?
+```console
 $ nixos-rebuild dry-activate --flake .#kuschelhaufen --use-remote-sudo --use-substitutes --target-host kuschelhaufen.cuties.social
 ```
 
@@ -15,4 +14,11 @@ $ nixos-rebuild dry-activate --flake .#kuschelhaufen --use-remote-sudo --use-sub
 
 ```console
 $ nixos-rebuild dry-activate --flake .#kuschelhaufen
+```
+# Updating emojis
+
+The following will only update the `custom-emojis` flake input.
+
+```console
+$ nix flake lock --update-input nixpkgs
 ```

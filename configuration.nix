@@ -89,6 +89,7 @@ in
     fd
     ripgrep
     neofetch
+    git
   ];
 
   sops = {

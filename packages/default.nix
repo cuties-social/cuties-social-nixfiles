@@ -2,17 +2,17 @@ inputs: final: prev:
 rec {
   mastodon = prev.mastodon.override {
     pname = "mastodon-cuties-socal";
-    version = "4.2.6";
+    version = "4.2.7";
     gemset = builtins.toString (final.fetchurl {
-      url = "https://raw.githubusercontent.com/NixOS/nixpkgs/5cd625ed59521004edd40e4547c4843413ff4fce/pkgs/servers/mastodon/gemset.nix";
-      hash = "sha256-GqeL/z9LBrxV0nuiMFLIE6/Gg3jhydJxt7N2vr6iZAQ=";
+      url = "https://raw.githubusercontent.com/NixOS/nixpkgs/61acce0cb596050f5fa1c6ebf3f339a893361028/pkgs/servers/mastodon/gemset.nix";
+      hash = "sha256-Npny6jwon/xdTMU7xOZSZmiwId5IMDUgno1dG1FGkhA=";
     });
     patches = [
       ./mastodon/allpatches.patch
       ./mastodon/troet.patch
       (final.fetchpatch {
-        url = "https://github.com/mastodon/mastodon/compare/v4.2.5...v4.2.6.patch";
-        hash = "sha256-ElTQFC73dPTiorVOIRCjuGxV8YuXTqNVbaOvil5KP9k=";
+        url = "https://github.com/mastodon/mastodon/compare/v4.2.6...v4.2.7.patch";
+        hash = "sha256-8FhlSIHOKIEjq62+rp8QdHY87qMCtDZwjyR0HabdHig=";
       })
     ];
   };

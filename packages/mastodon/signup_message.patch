@@ -1,0 +1,39 @@
+diff --git a/config/locales/de.yml b/config/locales/de.yml
+index d72b0a608..2cfacf949 100644
+--- a/config/locales/de.yml
++++ b/config/locales/de.yml
+@@ -1092,7 +1092,7 @@ de:
+       preamble_html: Melde dich mit deinen Zugangsdaten für <strong>%{domain}</strong> an. Solltest du dein Konto auf einem anderen Server registriert haben, ist eine Anmeldung hier nicht möglich.
+       title: Bei %{domain} anmelden
+     sign_up:
+-      manual_review: Registrierungen für den Server %{domain} werden manuell durch unsere Moderator*innen überprüft. Um uns dabei zu unterstützen, schreibe etwas über dich und sage uns, weshalb du ein Konto auf %{domain} anlegen möchtest.
++      manual_review: Registrierungen für den Server %{domain} werden manuell durch unsere Moderator*innen überprüft. Bitte schreibe etwas über dich, erzähle wie du %{domain} gefunden hast und warum du ausgerechnet bei %{domain} einen Account erstellen möchtest.
+       preamble: Mit einem Konto auf diesem Mastodon-Server kannst du jeder anderen Person im Netzwerk folgen, unabhängig davon, wo ihr Konto registriert ist.
+       title: Lass uns dein Konto auf %{domain} einrichten.
+     status:
+diff --git a/config/locales/en-GB.yml b/config/locales/en-GB.yml
+index 98a40c45c..cdc7df0df 100644
+--- a/config/locales/en-GB.yml
++++ b/config/locales/en-GB.yml
+@@ -1092,7 +1092,7 @@ en-GB:
+       preamble_html: Log in with your <strong>%{domain}</strong> credentials. If your account is hosted on a different server, you will not be able to log in here.
+       title: Log in to %{domain}
+     sign_up:
+-      manual_review: Sign-ups on %{domain} go through manual review by our moderators. To help us process your registration, write a bit about yourself and why you want an account on %{domain}.
++      manual_review: Sign-ups on %{domain} go through manual review by our moderators. Please write a bit about yourself, how you found out about %{domain} and why you want to create an account specifically on %{domain}.
+       preamble: With an account on this Mastodon server, you'll be able to follow any other person on the network, regardless of where their account is hosted.
+       title: Let's get you set up on %{domain}.
+     status:
+diff --git a/config/locales/en.yml b/config/locales/en.yml
+index 2b3bfb4c7..441b7504f 100644
+--- a/config/locales/en.yml
++++ b/config/locales/en.yml
+@@ -1092,7 +1092,7 @@ en:
+       preamble_html: Login with your <strong>%{domain}</strong> credentials. If your account is hosted on a different server, you will not be able to log in here.
+       title: Login to %{domain}
+     sign_up:
+-      manual_review: Sign-ups on %{domain} go through manual review by our moderators. To help us process your registration, write a bit about yourself and why you want an account on %{domain}.
++      manual_review: Sign-ups on %{domain} go through manual review by our moderators. Please write a bit about yourself, how you found out about %{domain} and why you want to create an account specifically on %{domain}.
+       preamble: With an account on this Mastodon server, you'll be able to follow any other person on the network, regardless of where their account is hosted.
+       title: Let's get you set up on %{domain}.
+     status:

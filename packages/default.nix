@@ -10,6 +10,7 @@ rec {
     patches = [
       ./mastodon/allpatches.patch
       ./mastodon/troet.patch
+      ./mastodon/signup_message.patch
       (final.fetchpatch {
         url = "https://github.com/mastodon/mastodon/compare/v4.2.6...v4.2.7.patch";
         hash = "sha256-8FhlSIHOKIEjq62+rp8QdHY87qMCtDZwjyR0HabdHig=";

@@ -8,7 +8,15 @@ rec {
       hash = "sha256-Npny6jwon/xdTMU7xOZSZmiwId5IMDUgno1dG1FGkhA=";
     });
     patches = [
-      ./mastodon/allpatches.patch
+      ./mastodon/account.patch
+      ./mastodon/account_spec.patch
+      ./mastodon/compose_form.patch
+      ./mastodon/initial_state_serializer.patch
+      ./mastodon/instance_serializer.patch
+      ./mastodon/poll_form.patch
+      ./mastodon/poll_validator.patch
+      ./mastodon/show.patch
+      ./mastodon/status_length_validator.patch
       ./mastodon/troet.patch
       (final.fetchpatch {
         url = "https://github.com/mastodon/mastodon/compare/v4.2.6...v4.2.7.patch";

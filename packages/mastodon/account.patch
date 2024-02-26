@@ -1,0 +1,38 @@
+diff --git a/app/models/account.rb b/app/models/account.rb
+index 05e1f943c..eb16e296d 100644
+--- a/app/models/account.rb
++++ b/app/models/account.rb
+@@ -88,6 +88,10 @@ class Account < ApplicationRecord
+   enum protocol: { ostatus: 0, activitypub: 1 }
+   enum suspension_origin: { local: 0, remote: 1 }, _prefix: true
+
++  MAX_DISPLAY_NAME_LENGTH = (ENV['MAX_DISPLAY_NAME_CHARS'] || 30).to_i
++  MAX_NOTE_LENGTH = (ENV['MAX_BIO_CHARS'] || 512).to_i
++  MAX_FIELDS = (ENV['MAX_PROFILE_FIELDS'] || 4).to_i
++
+   validates :username, presence: true
+   validates_with UniqueUsernameValidator, if: -> { will_save_change_to_username? }
+
+@@ -100,9 +104,9 @@ class Account < ApplicationRecord
+   # Local user validations
+   validates :username, format: { with: /\A[a-z0-9_]+\z/i }, length: { maximum: 30 }, if: -> { local? && will_save_change_to_username? && actor_type != 'Application' }
+   validates_with UnreservedUsernameValidator, if: -> { local? && will_save_change_to_username? && actor_type != 'Application' }
+-  validates :display_name, length: { maximum: 30 }, if: -> { local? && will_save_change_to_display_name? }
+-  validates :note, note_length: { maximum: 500 }, if: -> { local? && will_save_change_to_note? }
+-  validates :fields, length: { maximum: 4 }, if: -> { local? && will_save_change_to_fields? }
++  validates :display_name, length: { maximum: MAX_DISPLAY_NAME_LENGTH }, if: -> { local? && will_save_change_to_display_name? }
++  validates :note, note_length: { maximum: MAX_NOTE_LENGTH }, if: -> { local? && will_save_change_to_note? }
++  validates :fields, length: { maximum: MAX_FIELDS }, if: -> { local? && will_save_change_to_fields? }
+   validates :uri, absence: true, if: :local?, on: :create
+   validates :inbox_url, absence: true, if: :local?, on: :create
+   validates :shared_inbox_url, absence: true, if: :local?, on: :create
+@@ -350,7 +354,7 @@ class Account < ApplicationRecord
+     self[:fields] = fields
+   end
+
+-  DEFAULT_FIELDS_SIZE = 4
++  DEFAULT_FIELDS_SIZE = MAX_FIELDS
+
+   def build_fields
+     return if fields.size >= DEFAULT_FIELDS_SIZE
+

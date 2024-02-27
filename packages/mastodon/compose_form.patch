@@ -1,0 +1,33 @@
+diff --git a/app/javascript/mastodon/features/compose/components/compose_form.jsx b/app/javascript/mastodon/features/compose/components/compose_form.jsx
+index 9222b2dc8..bfea93b08 100644
+--- a/app/javascript/mastodon/features/compose/components/compose_form.jsx
++++ b/app/javascript/mastodon/features/compose/components/compose_form.jsx
+@@ -9,6 +9,9 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
+
+ import { length } from 'stringz';
+
++import initialState from '../../../initial_state';
++const maxChars = initialState.max_toot_chars;
++
+ import { Icon }  from 'mastodon/components/icon';
+
+ import AutosuggestInput from '../../../components/autosuggest_input';
+@@ -100,7 +103,7 @@ class ComposeForm extends ImmutablePureComponent {
+     const fulltext = this.getFulltextForCharacterCounting();
+     const isOnlyWhitespace = fulltext.length !== 0 && fulltext.trim().length === 0;
+
+-    return !(isSubmitting || isUploading || isChangingUpload || length(fulltext) > 500 || (isOnlyWhitespace && !anyMedia));
++    return !(isSubmitting || isUploading || isChangingUpload || length(fulltext) > maxChars || (isOnlyWhitespace && !anyMedia));
+   };
+
+   handleSubmit = (e) => {
+@@ -297,7 +300,7 @@ class ComposeForm extends ImmutablePureComponent {
+             </div>
+
+             <div className='character-counter__wrapper'>
+-              <CharacterCounter max={500} text={this.getFulltextForCharacterCounting()} />
++              <CharacterCounter max={maxChars} text={this.getFulltextForCharacterCounting()} />
+             </div>
+           </div>
+         </div>
+

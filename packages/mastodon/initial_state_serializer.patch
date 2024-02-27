@@ -1,0 +1,30 @@
+diff --git a/app/serializers/initial_state_serializer.rb b/app/serializers/initial_state_serializer.rb
+index d1c03a413..dce385137 100644
+--- a/app/serializers/initial_state_serializer.rb
++++ b/app/serializers/initial_state_serializer.rb
+@@ -5,7 +5,7 @@ class InitialStateSerializer < ActiveModel::Serializer
+ 
+   attributes :meta, :compose, :accounts,
+              :media_attachments, :settings,
+-             :languages
++             :languages, :max_toot_chars, :min_poll_options, :max_poll_options
+ 
+   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
+ 
+@@ -106,6 +106,16 @@ class InitialStateSerializer < ActiveModel::Serializer
+     LanguagesHelper::SUPPORTED_LOCALES.map { |(key, value)| [key, value[0], value[1]] }
+   end
+ 
++  def max_toot_chars
++    StatusLengthValidator::MAX_CHARS
++  end
++  def min_poll_options
++    PollValidator::MIN_OPTIONS
++  end
++  def max_poll_options
++    PollValidator::MAX_OPTIONS
++  end
++
+   private
+ 
+   def instance_presenter

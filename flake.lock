@@ -3,11 +3,11 @@
     "custom-emojis": {
       "flake": false,
       "locked": {
-        "lastModified": 1704886235,
-        "narHash": "sha256-pj0dkVezJa+BN/yr73/gs3Ct0tFYx9oVzzkTxNoRxOY=",
+        "lastModified": 1715525923,
+        "narHash": "sha256-nNObkp5EJUvllJRIUGIXO9GaPAv7hC1AVxI+fQCaQAU=",
         "owner": "cuties-social",
         "repo": "custom-emojis",
-        "rev": "07bee181ed319e52cfd815baf39219b62c07026e",
+        "rev": "6e91f3303f2e8394ea832b5147db117c27ac6330",
         "type": "github"
       },
       "original": {

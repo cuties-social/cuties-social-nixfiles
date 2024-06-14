@@ -20,5 +20,5 @@ $ nixos-rebuild dry-activate --flake .#kuschelhaufen
 The following will only update the `custom-emojis` flake input.
 
 ```console
-$ nix flake lock --update-input nixpkgs
+$ nix flake lock --update-input custom-emojis
 ```

@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-324587": {
+      "locked": {
+        "lastModified": 1720105932,
+        "narHash": "sha256-m1f/yXrCX3czYSVvBz5jdJ41dcCVsKlSIrnH0i83L6U=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f0b11ac6cd9d74b28cfbe92565f0ecbc68fe26c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "pull/324587/head",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1717880976,
@@ -52,6 +68,7 @@
       "inputs": {
         "custom-emojis": "custom-emojis",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-324587": "nixpkgs-324587",
         "sops-nix": "sops-nix"
       }
     },

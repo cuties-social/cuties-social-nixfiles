@@ -1,9 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    # PR containing the 4.2.10 update, pulling it that way because its a security update.
-    # https://github.com/NixOS/nixpkgs/pull/324587
-    nixpkgs-324587.url = "github:NixOS/nixpkgs/pull/324587/head";
     custom-emojis = {
       url = "github:cuties-social/custom-emojis";
       flake = false;
@@ -17,7 +14,6 @@
   outputs = { self, nixpkgs, sops-nix, ... }@inputs: let
     overlays = [
       sops-nix.overlays.default
-      (_: prev: { inherit (inputs.nixpkgs-324587.legacyPackages.${prev.system}) mastodon; })
       (import ./packages/default.nix inputs)
     ];
     pkgs = import nixpkgs {

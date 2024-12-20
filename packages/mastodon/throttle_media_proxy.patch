@@ -1,0 +1,13 @@
+diff --git a/config/initializers/rack_attack.rb b/config/initializers/rack_attack.rb
+index 8125b335f..00f533610 100644
+--- a/config/initializers/rack_attack.rb
++++ b/config/initializers/rack_attack.rb
+@@ -82,7 +82,7 @@ class Rack::Attack
+     req.authenticated_user_id if req.post? && req.path.match?(%r{\A/api/v\d+/media\z}i)
+   end
+ 
+-  throttle('throttle_media_proxy', limit: 30, period: 10.minutes) do |req|
++  throttle('throttle_media_proxy', limit: 250, period: 10.minutes) do |req|
+     req.throttleable_remote_ip if req.path.start_with?('/media_proxy')
+   end
+ 

@@ -14,6 +14,7 @@ rec {
       ./mastodon/status_length_validator.patch
       ./mastodon/troet.patch
       ./mastodon/signup_message.patch
+      ./mastodon/throttle_media_proxy.patch
     ];
   };
 

@@ -26,7 +26,7 @@ in
       interface = "ens3";
     };
     defaultGateway = {
-      address = "185.232.68.1";
+      address = "152.53.128.1";
       interface = "ens3";
     };
 
@@ -35,12 +35,12 @@ in
       useDHCP = false;
 
       ipv6.addresses = [{
-        address = "2a03:4000:4e:af1::1";
+        address = "2a0a:4cc0:c0:390::1";
         prefixLength = 64;
       }];
 
       ipv4.addresses = [{
-        address = "185.232.70.80";
+        address = "152.53.131.175";
         prefixLength = 22;
       }];
     };

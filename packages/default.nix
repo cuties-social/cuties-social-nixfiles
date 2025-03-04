@@ -3,15 +3,8 @@ rec {
   mastodon = prev.mastodon.override {
     pname = "mastodon-cuties-socal";
     patches = [
-      ./mastodon/account.patch
-      ./mastodon/account_spec.patch
-      ./mastodon/compose_form.patch
-      ./mastodon/initial_state_serializer.patch
-      ./mastodon/instance_serializer.patch
-      ./mastodon/poll_form.patch
-      ./mastodon/poll_validator.patch
-      ./mastodon/show.patch
-      ./mastodon/status_length_validator.patch
+      ./mastodon/account_field_limits.patch
+      ./mastodon/status_max_characters.patch
       ./mastodon/troet.patch
       ./mastodon/signup_message.patch
       ./mastodon/throttle_media_proxy.patch

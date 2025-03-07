@@ -403,7 +403,7 @@ in
     targets = [{
       user = "cutiessocial";
       passwordFile = config.sops.secrets."restic-server-jules".path;
-      hostname = "restic.jules.f2k1.de";
+      hostname = "restic.storage.f2k1.de";
     }];
     timerSpec = "*-*-* 05:11:00";
   };

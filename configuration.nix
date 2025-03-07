@@ -16,6 +16,7 @@ in
   system.stateVersion = "22.11";
   time.timeZone = "Europe/Berlin";
   console.keyMap = "de";
+  environment.enableAllTerminfo = true;
 
   networking = {
     hostName = "kuschelhaufen";

@@ -412,6 +412,20 @@ in
   systemd.services.restic-backup-mastodon.serviceConfig.SupplementaryGroups = config.systemd.services.redis-mastodon.serviceConfig.Group;
 
   services.nginx.clientMaxBodySize = "100m";
+  services.nginx.virtualHosts = {
+    "cuties.social" = {
+      locations."@proxy".extraConfig = ''
+        error_page 500 502 503 504 /500.html;
+      '';
+      locations."= /500.html" = {
+        root = "${./wartungsarbeiten}";
+        extraConfig = ''
+          internal;
+        '';
+      };
+      locations."= /warnluna.png".root = ./wartungsarbeiten;
+    };
+  };
 
   services.journald.extraConfig = "SystemMaxUse=512M";
   services.logrotate.settings.nginx = {

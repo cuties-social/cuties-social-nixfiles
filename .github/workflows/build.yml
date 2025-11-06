@@ -2,6 +2,12 @@ name: "Build system config"
 on:
   pull_request:
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    # Build twice a week to ensure that the cache is always primed
+    - cron: '42 23 * * 2,6'
 jobs:
   build:
     runs-on: ubuntu-latest

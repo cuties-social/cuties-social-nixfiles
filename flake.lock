@@ -3,11 +3,11 @@
     "custom-emojis": {
       "flake": false,
       "locked": {
-        "lastModified": 1753074343,
-        "narHash": "sha256-n+N3baxTfu7C7MPOl1BTq6+E1qcPkJ09BRR6s8xcmPg=",
+        "lastModified": 1765719392,
+        "narHash": "sha256-vkfi2zwqGRY4ptyBhU7aMjjOCp7wAfU+rGfV+c7dqzw=",
         "owner": "cuties-social",
         "repo": "custom-emojis",
-        "rev": "07bf60cdff007ecb842d6f2fc4da71eeaa341fb2",
+        "rev": "a6632171b0f5bf2db7fbc5d3df5cf5de0795313d",
         "type": "github"
       },
       "original": {
@@ -18,11 +18,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1763049705,
-        "narHash": "sha256-A5LS0AJZ1yDPTa2fHxufZN++n8MCmtgrJDtxFxrH4S8=",
+        "lastModified": 1765687488,
+        "narHash": "sha256-7YAJ6xgBAQ/Nr+7MI13Tui1ULflgAdKh63m1tfYV7+M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "3acb677ea67d4c6218f33de0db0955f116b7588c",
+        "rev": "d02bcc33948ca19b0aaa0213fe987ceec1f4ebe1",
         "type": "github"
       },
       "original": {
@@ -46,11 +46,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763069729,
-        "narHash": "sha256-A91a+K0Q9wfdPLwL06e/kbHeAWSzPYy2EGdTDsyfb+s=",
+        "lastModified": 1765684837,
+        "narHash": "sha256-fJCnsYcpQxxy/wit9EBOK33c0Z9U4D3Tvo3gf2mvHos=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "a2bcd1c25c1d29e22756ccae094032ab4ada2268",
+        "rev": "94d8af61d8a603d33d1ed3500a33fcf35ae7d3bc",
         "type": "github"
       },
       "original": {

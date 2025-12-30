@@ -208,7 +208,7 @@ in
       secretKeyBaseFile = secrets."mastodon/secret_key".path;
       vapidPrivateKeyFile = secrets."mastodon/vapid/private_key".path;
       vapidPublicKeyFile = secrets."mastodon/vapid/public_key".path;
-      otpSecretFile = secrets."mastodon/otp_secret".path;
+      #otpSecretFile = secrets."mastodon/otp_secret".path;
 
       mediaAutoRemove = {
         enable = true;

@@ -231,7 +231,7 @@ in
       };
 
       extraConfig = {
-        MAX_TOOT_CHARS = "5000";
+        MAX_TOOT_CHARS = "15000";
         MIN_POLL_OPTIONS = "1";
         MAX_POLL_OPTIONS = "10";
         MAX_DISPLAY_NAME_CHARS = "100";

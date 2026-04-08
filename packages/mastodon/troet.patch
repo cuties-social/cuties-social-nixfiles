@@ -1,26 +1,26 @@
 diff --git a/app/javascript/mastodon/locales/de.json b/app/javascript/mastodon/locales/de.json
-index b528531e8..39abde8a4 100644
+index 4921b57cc..9f6e6a48c 100644
 --- a/app/javascript/mastodon/locales/de.json
 +++ b/app/javascript/mastodon/locales/de.json
-@@ -162,7 +162,7 @@
+@@ -213,7 +213,7 @@
    "compose_form.poll.switch_to_multiple": "Mehrfachauswahl erlauben",
    "compose_form.poll.switch_to_single": "Nur Einfachauswahl erlauben",
-   "compose_form.poll.type": "Art",
+   "compose_form.poll.type": "Typ",
 -  "compose_form.publish": "Veröffentlichen",
-+  "compose_form.publish": "Tröt",
-   "compose_form.publish_form": "Neuer Beitrag",
++  "compose_form.publish": "Abfahrt",
    "compose_form.reply": "Antworten",
    "compose_form.save_changes": "Aktualisieren",
+   "compose_form.spoiler.marked": "Inhaltswarnung entfernen",
 diff --git a/app/javascript/mastodon/locales/en.json b/app/javascript/mastodon/locales/en.json
-index ec3851be4..65b64c45d 100644
+index 9389299ba..092875d55 100644
 --- a/app/javascript/mastodon/locales/en.json
 +++ b/app/javascript/mastodon/locales/en.json
-@@ -162,7 +162,7 @@
+@@ -213,7 +213,7 @@
    "compose_form.poll.switch_to_multiple": "Change poll to allow multiple choices",
    "compose_form.poll.switch_to_single": "Change poll to allow for a single choice",
    "compose_form.poll.type": "Style",
 -  "compose_form.publish": "Post",
 +  "compose_form.publish": "Toot",
-   "compose_form.publish_form": "New post",
    "compose_form.reply": "Reply",
    "compose_form.save_changes": "Update",
+   "compose_form.spoiler.marked": "Remove content warning",

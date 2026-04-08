@@ -1,17 +1,17 @@
 diff --git a/app/models/account.rb b/app/models/account.rb
-index 708415b6e..5f91a12d2 100644
+index 5f4caf9ea..714e94b7c 100644
 --- a/app/models/account.rb
 +++ b/app/models/account.rb
-@@ -65,7 +65,7 @@ class Account < ApplicationRecord
-   )
- 
+@@ -69,7 +69,7 @@ class Account < ApplicationRecord
    BACKGROUND_REFRESH_INTERVAL = 1.week.freeze
+   REFRESH_DEADLINE = 6.hours
+   STALE_THRESHOLD = 1.day
 -  DEFAULT_FIELDS_SIZE = 4
 +  DEFAULT_FIELDS_SIZE = (ENV['MAX_PROFILE_FIELDS'] || 4).to_i
    INSTANCE_ACTOR_ID = -99
  
    USERNAME_RE   = /[a-z0-9_]+([.-]+[a-z0-9_]+)*/i
-@@ -73,8 +73,8 @@ class Account < ApplicationRecord
+@@ -77,8 +77,8 @@ class Account < ApplicationRecord
    URL_PREFIX_RE = %r{\Ahttp(s?)://[^/]+}
    USERNAME_ONLY_RE = /\A#{USERNAME_RE}\z/i
    USERNAME_LENGTH_LIMIT = 30

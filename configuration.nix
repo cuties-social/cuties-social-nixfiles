@@ -424,6 +424,11 @@ in
         '';
       };
       locations."= /warnluna.png".root = ./wartungsarbeiten;
+      extraConfig = ''
+        if ($http_user_agent ~* (meta-externalagent)) {
+          return 403;
+        }
+      '';
     };
   };
 

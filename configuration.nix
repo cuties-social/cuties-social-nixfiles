@@ -89,7 +89,7 @@ in
     bat
     fd
     ripgrep
-    neofetch
+    #neofetch
     git
   ];
 
@@ -442,4 +442,6 @@ in
     device = "/var/lib/swapfile";
     size = 2*1024;
   } ];
+
+  nixpkgs.config.permittedInsecurePackages = [ "elasticsearch-7.17.27" ];
 }
